@@ -53,8 +53,11 @@ var routes = (
 Router.run(routes, Router.HistoryLocation, function (Handler) {
 	React.render(<Handler/>, document.body);
   //charts
-  worldMap = charts.worldMap("LP");
-  window.addEventListener('resize', function() {
-    worldMap.resize();
-  });
+  charts.worldMap("GGXWDN_NGDP")
+    .then(function(map) {
+      map.legend();
+      window.addEventListener('resize', function() {
+         map.resize();
+       });   
+    });
 });

@@ -27,6 +27,7 @@
   },
   "scripts": {
     "start": "supervisor server.js",
-    "test": "echo \"no tests yet\" && exit 0"
+    "test": "echo \"no tests yet\" && exit 0",
+    "seed": "node server/util/mongo-import.js"
   }
 }

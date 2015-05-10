@@ -10,6 +10,7 @@ var subjectSchema = mongoose.Schema({
   Units: String,
   Scale: String,
   County_Series_Specific_Notes: String,
+  Estimates_Start_After: Number,
   AnnualData: [{
     Year: Number,
     Data: Number

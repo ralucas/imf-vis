@@ -21,7 +21,8 @@ module.exports = {
       'react-d3',
       'topojson',
       'datamaps/dist/datamaps.all.js',
-      'jquery'
+      'jquery',
+      'lodash'
 		]
 	}
 };

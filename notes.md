@@ -9,3 +9,5 @@ Volatility to Stability circle graph
 Need to develop a metric for calculating volatility level
 
 Unemployment visualization
+
+Data point relativity in both terms of region and world

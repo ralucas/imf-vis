@@ -1,23 +1,31 @@
-var MongoService = require('../services/mongo-service.js');
+var SubjectManager = require('../managers/subject');
 
 function SubjectHandler() {}
 
 SubjectHandler.prototype.get = function(req, res, next) {
   var subjectCode = req.params.subjectCode,
-      year        = req.params.year || false,
-      params      = {};
-      console.log(year);
+      year        = req.query.year,
+      countryId   = req.query.countryId,
+      params      = {},
+      options     = {};
 
   if (!subjectCode) res.status(400).send(new Error('WEO Subject Code required'));
   
   params.WEO_Subject_Code = subjectCode;
-  if (year) params.AnnualData = {Year: year};
+  
+  if (year) {
+    options.year = year;
+  }
+  
+  if (countryId) {
+    params.ISO = countryId;
+  }
 
-  MongoService.find(params)
+  SubjectManager.find(params, options)
     .then(function(results) {
       res.status(200).send(results);
     }).fail(function(err) {
-      res.status(500).send(new Error('Database Error: ', err));
+      res.status(500).send(new Error('Error: ', err));
     });
 };
 

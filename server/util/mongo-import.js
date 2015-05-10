@@ -1,4 +1,3 @@
-'use strict';
 
 var path = require('path');
 var fs = require('fs');
@@ -8,7 +7,7 @@ var parse = csv.parse;
 var _ = require('lodash');
 var mongoose = require('mongoose');
 
-var db = require('../services/mongo-connect.js');
+var db = require('../services/mongo-service.js');
 var Country = require('../models/country.js');
 var Subject = require('../models/subject.js');
 
@@ -76,18 +75,17 @@ var parseSubjects = function() {
       header.replace(/\s/, '_');
       headers.push(header);
     });
-
-    var years = headers.slice(9);
+    console.log('headers', headers);
+    var years = headers.slice(9, headers.length-2);
 
     var currCode,
         doc = {},
         id = 1000;
    
     _.forEach(output, function(data) {
+      var len = data.length;
     
-      var annualData = mapYears([years, data.slice(9)]);
-      //var id = new mongoose.Types.ObjectId();
-      id += 1;
+      var annualData = mapYears([years, data.slice(9, len-2)]);
 
       doc = {
         WEO_Country_Code: data[0],
@@ -99,6 +97,7 @@ var parseSubjects = function() {
         Units: data[6],
         Scale: data[7],
         Country_Series_Specific_Notes: data[8],
+        Estimates_Start_After: data[len-1],
         AnnualData: annualData          
       };
       docs.push(doc);
@@ -127,6 +126,7 @@ var count = 0;
 
 var interval = setInterval(function() {
   var add = 1000;
+  var exit = false;
 
   if (docs.length < 1) {
     console.log('---End---');
@@ -136,6 +136,7 @@ var interval = setInterval(function() {
   if (docs.length < 1000) {
     end = add = docs.length;
     console.log('Last Insert of ' + end + ' documents...');
+    exit = true;
     clearInterval(interval);
   }
 
@@ -156,7 +157,13 @@ var interval = setInterval(function() {
 
   docs.splice(start, end);
 
+  if (exit) {
+    console.log('Goodbye');
+    process.exit(0);
+  }
+
 }, 5000);
+
 
 /*
  * Potential Redis Structure
