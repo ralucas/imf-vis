@@ -13,11 +13,11 @@ var Subject = require('../models/subject.js');
 
 var csvPath = path.join(__dirname, '../../data/WEOOct2014all.csv');
 
-var csvFile = fs.readFileSync(csvPath);
+//var csvFile = fs.readFileSync(csvPath);
 
 var docs = [];
 
-var parseCountries = function() {
+var parseCountries = function(csvFile) {
   parse(csvFile, function(err, output) {
     var headers = [];
     var ogHeaders = output.shift();
@@ -65,7 +65,7 @@ var parseCountries = function() {
   });
 };
 
-var parseSubjects = function() {
+var parseSubjects = function(csvFile) {
 
   parse(csvFile, function(err, output) {
     var headers = [];
@@ -81,11 +81,14 @@ var parseSubjects = function() {
         doc = {},
         id = 1000;
    
-    _.forEach(output, function(data) {
+    _.forEach(output, function(data, idx) {
       var len = data.length;
+      var dataArr = data.slice(9, len -2);
     
-      var annualData = mapYears([years, data.slice(9, len-2)]);
-
+      var annualData = mapYears([years, dataArr]);
+      if (data[1] === 'USA') {
+        console.log(data[2], annualData);
+      }
       doc = {
         WEO_Country_Code: data[0],
         ISO: data[1],
@@ -97,7 +100,7 @@ var parseSubjects = function() {
         Scale: data[7],
         Country_Series_Specific_Notes: data[8],
         Estimates_Start_After: data[len-1],
-        AnnualData: annualData          
+        AnnualData: annualData
       };
       docs.push(doc);
     });
@@ -117,14 +120,18 @@ function mapYears(arr) {
   return output;
 }
 
-parseSubjects();
+// Read in the file and begin parsing
+fs.readFile(csvPath, function(err, csvFile) {
+  if (err) throw new Error(err);
+  parseSubjects(csvFile);
+});
 
 var start = 0;
-var end = 1000;
+var end = 500;
 var count = 0;
 
 var interval = setInterval(function() {
-  var add = 1000;
+  var add = 500;
   var exit = false;
 
   if (docs.length < 1) {
@@ -132,7 +139,7 @@ var interval = setInterval(function() {
     process.exit(0);
   }
 
-  if (docs.length < 1000) {
+  if (docs.length < 500) {
     end = add = docs.length;
     console.log('Last Insert of ' + end + ' documents...');
     exit = true;
@@ -141,7 +148,7 @@ var interval = setInterval(function() {
 
   console.log('Docs %d - %d attempted', count, (count + add));
   
-  count += 1000;
+  count += 500;
 
   var insert = docs.slice(start, end);
 
@@ -161,7 +168,7 @@ var interval = setInterval(function() {
     process.exit(0);
   }
 
-}, 5000);
+}, 3000);
 
 
 /*

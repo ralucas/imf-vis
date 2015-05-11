@@ -3,7 +3,7 @@ var Q = require('q');
 
 var Subject = require('../models/subject');
 
-var MONGO_URI = process.env.MONGOLAB_URI || 'mongodb://localhost/imf';
+var MONGO_URI = process.env.MONGOLAB_URI || 'mongodb://localhost:27017/imf';
 
 mongoose.connect(MONGO_URI);
 

@@ -12,25 +12,26 @@ function max(dataset) {
   });
 
   return _.max(newData, function(data) {
-    return data.Data;
+    var num = data.Data.replace(/\,/,'');
+    return parseInt(num);
   });
 }
 
 // Based on percentile level
 exports.determineFill = function(dataset, maximum) {
   //maximum isn't guaranteed
-  var maxValue = maximum || max(dataset).Data;
+  var maxValue = maximum || parseInt(max(dataset).Data.replace(/\,/,''));
 
   _.forEach(dataset, function(data) {
     if (data.fillKey === 'defaultFill') {
       data.fillKey = '0';
     }
     _.forEach(data.AnnualData, function(year) {
-      
-      if (!year.Data || typeof(year.Data) === 'string') {
+      var parsedNum = parseInt(year.Data.replace(/\,/,'')); 
+      if (!year.Data || isNaN(parsedNum)) {
         data.fillKey = '0';
       } else {
-        var comp = (year.Data / maxValue) * 100;
+        var comp = (parsedNum / maxValue) * 100;
         data.fillKey = Math.ceil(comp / 12).toString();
       }
     });

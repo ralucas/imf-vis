@@ -78,6 +78,7 @@ module.exports = {
 
     return promise
       .then(function(data) {
+        console.log('d', data);
         that.cachedData = data;
 
         that.cachedMap = new Datamap({
@@ -176,6 +177,7 @@ module.exports = {
     return promise
       .then(function(data) {
         that.cachedData = data;
+        console.log('ucd', data);
 
         _.forEach(data, function(value, country) {
           colorUpdate[country] = colors[value.fillKey];

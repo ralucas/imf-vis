@@ -1,7 +1,8 @@
 var _ = require('lodash');
 
 var helpers = require('../helpers');
-var MongoService = require('../services/mongo-service.js');
+//var MongoService = require('../services/mongo-service.js');
+var MongoClient = require('../services/mongo-client.js');
 
 function SubjectManager() {}
 
@@ -9,9 +10,9 @@ function countryAndYear(dataset, options) {
   options = options || {};
 
   var output = {},
-      year = parseInt(options.year);
+      year = options.year.toString();
   if (!year && !options.ISO) {
-    year = 2014;
+    year = "2014";
   }
 
   var maximum;
@@ -68,7 +69,7 @@ function byCountry(dataset) {
 }
 
 SubjectManager.prototype.find = function(params, options) {
-  return MongoService.find(params)
+  return MongoClient.find(params)
     .then(function(results) {
       if (params.ISO) {
         options.ISO = params.ISO;
@@ -80,7 +81,7 @@ SubjectManager.prototype.find = function(params, options) {
 };
 
 SubjectManager.prototype.findByCountry = function(params) {
-  return MongoService.find(params)
+  return MongoClient.find(params)
     .then(function(results) {
       return byCountry(results);
     }).fail(function(err) {
