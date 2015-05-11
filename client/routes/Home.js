@@ -2,26 +2,6 @@ React = require('react');
 $ = require('jquery');
 charts = require('../scripts/charts');
 
-var legend = {
-  legendTitle : "LEGEND",
-  defaultFillName: "No data",
-  labels: {
-    "0": "LEAST",
-    "1": " ",
-    "2": " ",
-    "3": " ",
-    "4": " ",
-    "5": " ",
-    "6": " ",
-    "7": " ",
-    "8": " ",
-    "9": " ",
-    "10": " ",
-    "11": " ",
-    "12": "MOST" 
-  }
-} 
-
 var Home = React.createClass({
   getReports: function() {
     var that = this;
@@ -32,7 +12,7 @@ var Home = React.createClass({
           that.setState({reports: data.reports, reportTitle: title});
           charts.worldMap(data.reports[0].id, 2014)
             .then(function(map) {
-              map.legend(legend);
+              map.legend(charts.legend);
             });
         }
       })
@@ -67,7 +47,7 @@ var Home = React.createClass({
     var year = 2014;
     charts.worldMap(value, year)
       .then(function(map) {
-        map.legend(legend);
+        map.legend(charts.legend);
       });
   },
   sliderChange: function(e) {
@@ -97,7 +77,11 @@ var Home = React.createClass({
           <label for="yearSlider">YEAR: <span className="lead" id="yearNum">{this.state.year}</span></label>
         </div>
         <br />
-        <div id="chart"></div>
+        <div id="chart">
+          <div id="loader">
+            <img src="../images/loading.gif" width="100px" />
+          </div>
+        </div>
         <hr/>
         <div id="select-container">
           <label className="lead" for="reports">SELECT REPORT DATA TO VIEW</label>
@@ -108,33 +92,6 @@ var Home = React.createClass({
       </div>
     );
 	}
-});
-
-var Slider = React.createClass({
-
-  getInitialState: function() {
-    return {year: "2014"}
-  },
-
-  sliderChange: function(e) {
-    this.setState({year: e.target.value});
-  },
-
-  render: function() {
-    return (
-      <div id="slider-container">
-        <input id="yearSlider"
-          type="range" 
-          value="2014" 
-          min="2014" 
-          max="2019" 
-          onChange={this.sliderChange} 
-          step="1" />
-        <label for="yearSlider">YEAR: <span className="lead" id="yearNum">{this.state.year}</span></label>
-      </div>
-    );
-
-  }
 });
 
 module.exports = Home;

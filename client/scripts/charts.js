@@ -4,7 +4,7 @@ datamaps = require('datamaps/dist/datamaps.all.js');
 $ = require('jquery');
 _ = require('lodash');
 
-var cachedData = cachedData || {};
+//var cachedData = cachedData || {};
 
 function createQueryString(params) {
   var queryString = '?';
@@ -21,14 +21,37 @@ module.exports = {
 
   cachedMap: {},
 
+  cachedData: this.cachedData || {},
+
+  legend: {
+    legendTitle : "LEGEND",
+    defaultFillName: "NO DATA",
+    labels: {
+      "0": "NO DATA",
+      "1": "LEAST",
+      "2": " ",
+      "3": " ",
+      "4": " ",
+      "5": " ",
+      "6": " ",
+      "7": " ",
+      "8": " ",
+      "9": " ",
+      "10": " ",
+      "11": " ",
+      "12": "MOST" 
+    }
+  },
+ 
   scale: function() {
     var start = 8;
-    var colors = [];
+    var defaultFill = 'rgba(0,0,0,0.1)';
+    var colors = [defaultFill];
     var fills = {
-      '0': 'rgba(0,0,0,0.1)'
+      '0': defaultFill 
     };
     for(var i = 1; i < 13; i++) {
-      var color = 'hsla(8, ' + start * i + '%, 40%, 1)';
+      var color = 'hsla(8, ' + start * i + '%, 60%, 1)';
       colors.push(color);
       var str = i.toString();
       fills[str] = color;
@@ -55,7 +78,7 @@ module.exports = {
 
     return promise
       .then(function(data) {
-        cachedData = data;
+        that.cachedData = data;
 
         that.cachedMap = new Datamap({
           element: document.getElementById('chart'),
@@ -85,14 +108,14 @@ module.exports = {
     $('#chart').empty();
     var coords = _.flattenDeep(coord);
     year = year || '';
-    var promise = this.httpGet({subjectCode: code, year: '', countryId: countryId});
+    var promise = this.httpGet({subjectCode: code, year: year, countryId: countryId});
 
     return promise
       .then(function(data) {
-        _.assign(cachedData[data[0].ISO], data[0]);
-        data = cachedData;
-        
-        return new Datamap({
+        _.assign(that.cachedData[data[0].ISO], data[0]);
+        data = that.cachedData;
+
+        that.cachedMap = new Datamap({
           element: document.getElementById('chart'),
           responsive: true,
           fills: colors.fills,
@@ -135,8 +158,12 @@ module.exports = {
                 geo.properties.name + '</strong></p>' +
                 dataString(data) + '</div>'; 
             }
+          },
+          done: function(map) {
+            map.legend(that.legend);
           }
         });
+        return that.cachedMap;
     });
   },
 
@@ -148,7 +175,7 @@ module.exports = {
 
     return promise
       .then(function(data) {
-        cachedData = data;
+        that.cachedData = data;
 
         _.forEach(data, function(value, country) {
           colorUpdate[country] = colors[value.fillKey];
