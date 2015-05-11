@@ -4,6 +4,9 @@
   "private": true,
   "description": "IMF Visualizations",
   "main": "server.js",
+  "engines": {
+    "node": "0.10.x"
+  },
   "dependencies": {
     "bootstrap": "^3.3.1",
     "browserify-middleware": "^4.1.0",
