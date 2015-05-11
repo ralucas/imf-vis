@@ -20,7 +20,7 @@ nunjucks.configure(__dirname + '/templates/views', {
     express: app
 });
 
-if (process.env.NODE_ENV !== production) {
+if (process.env.NODE_ENV !== 'production') {
   var logStream = fs.createWriteStream(path.join(__dirname, '../logs/app.log'));
 }
 
