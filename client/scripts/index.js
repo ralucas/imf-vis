@@ -7,11 +7,23 @@ var Header = React.createClass({
 	render: function() {
 		return (
 			<div className="page-header">
-				<h1>IMF Visualizations</h1>
+				<h1>VISUALIZATIONS</h1>
+        <div id="text-logo"></div>
+        <div id="img-logo"><img src="../images/imf_logo.gif"/></div>
 			</div>
 		);
 	}
 });
+
+var Footer = React.createClass({
+	render: function() {
+		return (
+			<div className="page-footer">
+			</div>
+		);
+	}
+});
+
 
 var PageNav = React.createClass({
 	render: function() {
@@ -28,10 +40,10 @@ var PageNav = React.createClass({
 var App = React.createClass({
 	render: function() {
 		return (
-			<div className="container">
+			<div>
 				<Header />
-				<PageNav />
 				<Router.RouteHandler/>
+        <Footer />
 			</div>
 		);
 	}
@@ -54,18 +66,4 @@ var routes = (
 
 Router.run(routes, Router.HistoryLocation, function (Handler) {
 	React.render(<Handler/>, document.body);
-  //charts
-  var map;
-  charts.worldMap("GGXWDN_NGDP")
-    .then(function(map) {
-      map = map;
-      //map.legend();
-      window.addEventListener('resize', function() {
-         map.resize();
-       });   
-    });
-  $(document).on('click', '#chart', function() {
-    console.log('hj');
-    map.legend();
-  });
 });

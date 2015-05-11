@@ -55,7 +55,6 @@ module.exports = {
 
     return promise
       .then(function(data) {
-        console.log(data);
         cachedData = data;
 
         that.cachedMap = new Datamap({
@@ -65,7 +64,6 @@ module.exports = {
           data: data,
           geographyConfig: {
             popupTemplate: function(geo, data) {
-              console.log(geo);
               var chart = document.getElementById('chart');
               chart.onclick = function() {
                 that.newMap(code, geo.id, year, geo.geometry.coordinates[0]);
@@ -83,6 +81,7 @@ module.exports = {
 
   newMap: function(code, countryId, year, coord) {
     var that = this;
+    var colors = this.scale();
     $('#chart').empty();
     var coords = _.flattenDeep(coord);
     year = year || '';
@@ -91,19 +90,12 @@ module.exports = {
     return promise
       .then(function(data) {
         _.assign(cachedData[data[0].ISO], data[0]);
-        console.log(cachedData);
         data = cachedData;
         
         return new Datamap({
           element: document.getElementById('chart'),
           responsive: true,
-          fills: {
-            HIGH: 'orangered',
-            LOW: 'cornflowerblue',
-            MEDIUM: 'yellow',
-            UNKNOWN: 'rgba(0,0,0,0.2)',
-            defaultFill: 'rgba(0,0,0,0.2)'
-          },
+          fills: colors.fills,
           data: data,
           setProjection: function(element) {
             var projection = d3.geo.equirectangular()
@@ -156,14 +148,11 @@ module.exports = {
 
     return promise
       .then(function(data) {
-        console.log(data);
         cachedData = data;
 
         _.forEach(data, function(value, country) {
-          console.log(value.fillKey);
           colorUpdate[country] = colors[value.fillKey];
         });
-        console.log('cu', colorUpdate);
 
         that.cachedMap.updateChoropleth(colorUpdate);
       });

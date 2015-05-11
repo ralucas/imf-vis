@@ -22,7 +22,8 @@ module.exports = {
       'topojson',
       'datamaps/dist/datamaps.all.js',
       'jquery',
-      'lodash'
+      'lodash',
+      'jquery-ui'
 		]
 	}
 };

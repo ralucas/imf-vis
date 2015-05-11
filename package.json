@@ -13,6 +13,7 @@
     "elasticsearch": "^4.0.2",
     "express": "^4.10.4",
     "jquery": "^2.1.4",
+    "jquery-ui": "^1.10.5",
     "less-middleware": "^1.0.4",
     "lodash": "^3.8.0",
     "mongoose": "^4.0.2",
