@@ -24,10 +24,8 @@ var logStream = fs.createWriteStream(path.join(__dirname, '../logs/app.log'));
 
 var publicDir = path.join(__dirname, '../public');
 
-//var clientDir = path.join(__dirname, '../app/app');
-
 if (process.env.NODE_ENV === 'production') {
-  app.use(logger('combined', {stream: logStream}));
+  app.use(logger('combined'));
 } else {
   app.use(logger('dev'));
 }

@@ -1,9 +1,9 @@
 {
   "name": "imf-visualizations",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "description": "IMF Visualizations",
-  "main": "index.js",
+  "main": "server.js",
   "dependencies": {
     "bootstrap": "^3.3.1",
     "browserify-middleware": "^4.1.0",
@@ -28,7 +28,7 @@
     "topojson": "^1.6.19"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "node server/index.js",
     "test": "echo \"no tests yet\" && exit 0",
     "seed": "node server/util/mongo-import.js"
   }
