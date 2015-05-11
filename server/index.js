@@ -9,9 +9,6 @@ var express     = require('express'),
     logger      = require('morgan'),
     config      = require('../client/config');
 
-//Connect to the db
-//var db = require('./services/mongo-connect.js');
-
 //Routes
 var routes = require('./routes');
 
@@ -27,7 +24,13 @@ var logStream = fs.createWriteStream(path.join(__dirname, '../logs/app.log'));
 
 var publicDir = path.join(__dirname, '../public');
 
-app.use(logger('combined', {stream: logStream}));
+//var clientDir = path.join(__dirname, '../app/app');
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(logger('combined', {stream: logStream}));
+} else {
+  app.use(logger('dev'));
+}
 
 // less will automatically compile matching requests for .css files
 app.use(less(publicDir));

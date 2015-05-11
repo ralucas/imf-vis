@@ -29,5 +29,20 @@ SubjectHandler.prototype.get = function(req, res, next) {
     });
 };
 
+SubjectHandler.prototype.getByCountry = function(req, res, next) {
+  var countryId = req.params.countryId,
+      params = {};
+
+  if (!countryId) res.status(400).send(new Error('Country Id required'));
+
+  params.ISO = countryId;
+
+  SubjectManager.findByCountry(params)
+    .then(function(results) {
+      res.status(200).send(results);
+    }).fail(function(err) {
+      res.status(500).send(new Error('Error: ', err));
+    });
+};
 
 module.exports = new SubjectHandler();

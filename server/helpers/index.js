@@ -22,22 +22,17 @@ exports.determineFill = function(dataset, maximum) {
   var maxValue = maximum || max(dataset).Data;
 
   _.forEach(dataset, function(data) {
+    if (data.fillKey === 'defaultFill') {
+      data.fillKey = '0';
+    }
     _.forEach(data.AnnualData, function(year) {
-      if (year.Year === 2014) {
-        if (typeof(year.Data) === 'string') {
-          data.fillKey = 'defaultFill';
-        } else {
-          var comp = year.Data / maxValue;
-
-          if (comp < 0.33) {
-            data.fillKey = 'LOW';
-          } else if (0.34 < comp < 0.67) {
-            data.fillKey = 'MEDIUM';
-          } else if (0.67 < comp) {
-            data.fillKey = 'HIGH';
-          }
-        }
-      }  
+      
+      if (!year.Data || typeof(year.Data) === 'string') {
+        data.fillKey = '0';
+      } else {
+        var comp = (year.Data / maxValue) * 100;
+        data.fillKey = Math.ceil(comp / 12).toString();
+      }
     });
     return data;
   }); 

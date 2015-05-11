@@ -19,6 +19,27 @@ function createQueryString(params) {
 
 module.exports = {
 
+  cachedMap: {},
+
+  scale: function() {
+    var start = 8;
+    var colors = [];
+    var fills = {
+      '0': 'rgba(0,0,0,0.1)'
+    };
+    for(var i = 1; i < 13; i++) {
+      var color = 'hsla(8, ' + start * i + '%, 40%, 1)';
+      colors.push(color);
+      var str = i.toString();
+      fills[str] = color;
+    }
+
+    return {
+      colors: colors,
+      fills: fills
+    };
+  },
+
   httpGet: function(params) {
     var queryString = createQueryString(params); 
     var url = '/subject/' + params.subjectCode + queryString; 
@@ -26,26 +47,21 @@ module.exports = {
   },
 
   worldMap: function(code, year) {
+    var colors = this.scale();
     var that = this;
     $('#chart').empty();
     year = year || '';
-    var promise = this.httpGet({subjectCode: code, year: 2014});
+    var promise = this.httpGet({subjectCode: code, year: year});
 
     return promise
       .then(function(data) {
         console.log(data);
         cachedData = data;
 
-        return new Datamap({
+        that.cachedMap = new Datamap({
           element: document.getElementById('chart'),
           responsive: true,
-          fills: {
-            HIGH: 'orangered',
-            LOW: 'cornflowerblue',
-            MEDIUM: 'yellow',
-            UNKNOWN: 'rgba(0,0,0,0.2)',
-            defaultFill: 'rgba(0,0,0,0.2)'
-          },
+          fills: colors.fills,
           data: data,
           geographyConfig: {
             popupTemplate: function(geo, data) {
@@ -61,6 +77,7 @@ module.exports = {
             }
           }
         });
+        return that.cachedMap;
     });
   },
 
@@ -131,5 +148,32 @@ module.exports = {
     });
   },
 
+  updateColors: function(reportId, year) {
+    var that = this;
+    var colors = this.scale().colors;
+    var promise = this.httpGet({subjectCode: reportId, year: year});
+    var colorUpdate = {};
+
+    return promise
+      .then(function(data) {
+        console.log(data);
+        cachedData = data;
+
+        _.forEach(data, function(value, country) {
+          console.log(value.fillKey);
+          colorUpdate[country] = colors[value.fillKey];
+        });
+        console.log('cu', colorUpdate);
+
+        that.cachedMap.updateChoropleth(colorUpdate);
+      });
+  }
 
 };
+
+/*{*/
+            //HIGH: 'hsla(8, 50%, 45%, 1)',
+            //LOW: 'hsla(8, 40%, 82%, 1)',
+            //MEDIUM: 'hsla(8, 42%, 62%, 1)',
+          /*},*/
+

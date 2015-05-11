@@ -34,7 +34,7 @@ function countryAndYear(dataset, options) {
           year: annualData.Year,
           country: eachCountry.Country,
           subject_code: eachCountry.WEO_Subject_Code,
-          desciption: eachCountry.Subject_Descriptor
+          description: eachCountry.Subject_Descriptor
         };
 
         output[eachCountry.ISO] = reportData;
@@ -44,6 +44,28 @@ function countryAndYear(dataset, options) {
   return output;
 }
 
+function byCountry(dataset) {
+  var output = {
+    reports: [],
+    reportIds: []
+  };
+  _.forEach(dataset, function(report) {
+    output.countryId = report.ISO;
+    output.country = report.Country;
+    output.reportIds.push(report.WEO_Subject_Code);
+    output.reports.push({
+      id: report.WEO_Subject_Code,
+      data: report.AnnualData,
+      description: report.Subject_Descriptor,
+      units: report.Units,
+      notes: report.Subject_Notes,
+      scale: report.Scale,
+      specific_notes: report.County_Series_Specific_Notes,
+      estimates_start_after: report.Estimates_Start_After
+    });
+  });
+  return output;
+}
 
 SubjectManager.prototype.find = function(params, options) {
   return MongoService.find(params)
@@ -52,6 +74,15 @@ SubjectManager.prototype.find = function(params, options) {
         options.ISO = params.ISO;
       }
       return countryAndYear(results, options);
+    }).fail(function(err) {
+      return err;
+    });
+};
+
+SubjectManager.prototype.findByCountry = function(params) {
+  return MongoService.find(params)
+    .then(function(results) {
+      return byCountry(results);
     }).fail(function(err) {
       return err;
     });
