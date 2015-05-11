@@ -28,7 +28,7 @@
     "topojson": "^1.6.19"
   },
   "scripts": {
-    "start": "supervisor server.js",
+    "start": "node server.js",
     "test": "echo \"no tests yet\" && exit 0",
     "seed": "node server/util/mongo-import.js"
   }
