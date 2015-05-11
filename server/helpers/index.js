@@ -4,8 +4,25 @@ var fillLevels = {
 
 };
 
-function max(dataset) {
+function max(dataset, year) {
   var newData = [];
+
+  _.forEach(dataset, function(eachCountry) {
+    _.forEach(eachCountry.AnnualData, function(annual) {
+      if (annual.Year === year) {
+        newData.push(annual);
+      }
+    });
+  });
+
+  return _.max(newData, function(data) {
+    var num = data.Data.replace(/\,/,'');
+    return parseInt(num);
+  });
+}
+
+function fullMax(dataset) {
+ var newData = [];
 
   _.forEach(dataset, function(eachCountry) {
     newData = newData.concat(eachCountry.AnnualData);
@@ -18,9 +35,9 @@ function max(dataset) {
 }
 
 // Based on percentile level
-exports.determineFill = function(dataset, maximum) {
+exports.determineFill = function(dataset, year, maximum) {
   //maximum isn't guaranteed
-  var maxValue = maximum || parseInt(max(dataset).Data.replace(/\,/,''));
+  var maxValue = maximum || parseInt(fullMax(dataset).Data.replace(/\,/,''));
 
   _.forEach(dataset, function(data) {
     if (data.fillKey === 'defaultFill') {

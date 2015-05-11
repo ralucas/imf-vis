@@ -9,6 +9,8 @@ var express     = require('express'),
     logger      = require('morgan'),
     config      = require('../client/config');
 
+var favicon = require('serve-favicon');
+
 //Routes
 var routes = require('./routes');
 
@@ -31,6 +33,8 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   app.use(logger('dev'));
 }
+
+app.use(favicon(path.join(publicDir, '/images/favicon.ico')));
 
 // less will automatically compile matching requests for .css files
 app.use(less(publicDir));

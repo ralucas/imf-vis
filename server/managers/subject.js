@@ -20,7 +20,7 @@ function countryAndYear(dataset, options) {
     maximum = 100;
   }
 
-  helpers.determineFill(dataset, maximum);
+  helpers.determineFill(dataset, year, maximum);
 
   if (options.ISO) {
     return dataset;
