@@ -20,7 +20,9 @@ nunjucks.configure(__dirname + '/templates/views', {
     express: app
 });
 
-var logStream = fs.createWriteStream(path.join(__dirname, '../logs/app.log'));
+if (process.env.NODE_ENV !== production) {
+  var logStream = fs.createWriteStream(path.join(__dirname, '../logs/app.log'));
+}
 
 var publicDir = path.join(__dirname, '../public');
 
