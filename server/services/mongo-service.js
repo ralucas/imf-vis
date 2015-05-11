@@ -3,7 +3,9 @@ var Q = require('q');
 
 var Subject = require('../models/subject');
 
-mongoose.connect('mongodb://localhost/imf');
+var MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost/imf';
+
+mongoose.connect(MONGO_URI);
 
 function MongoService(config) {
   this.config = config || {};
@@ -15,7 +17,7 @@ function MongoService(config) {
   this.db.on('error', console.error.bind(console, 'connection error:'));
 
   this.db.once('open', function (callback) {
-    console.log('Connected to Mongodb instance');
+    console.log('Connected to MongoDB instance at: ' + MONGO_URI);
   });
 }
 

@@ -19,4 +19,4 @@ public/styles/*.css
 
 data/
 logs/
-
+.env

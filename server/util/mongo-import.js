@@ -75,7 +75,6 @@ var parseSubjects = function() {
       header.replace(/\s/, '_');
       headers.push(header);
     });
-    console.log('headers', headers);
     var years = headers.slice(9, headers.length-2);
 
     var currCode,

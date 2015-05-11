@@ -10,6 +10,7 @@
     "csv": "^0.4.2",
     "d3": "^3.5.5",
     "datamaps": "^0.3.6",
+    "dotenv": "^1.1.0",
     "elasticsearch": "^4.0.2",
     "express": "^4.10.4",
     "jquery": "^2.1.4",
