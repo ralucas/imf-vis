@@ -1,10 +1,22 @@
 var _ = require('lodash');
+var config = require('../../config');
 
-var helpers = require('../helpers');
-//var MongoService = require('../services/mongo-service.js');
 var MongoClient = require('../services/mongo-client.js');
 
 function SubjectManager() {}
+
+function fullMax(dataset) {
+ var newData = [];
+
+  _.forEach(dataset, function(eachCountry) {
+    newData = newData.concat(eachCountry.AnnualData);
+  });
+
+  return _.max(newData, function(data) {
+    var num = data.Data.replace(/\,/,'');
+    return parseInt(num);
+  });
+}
 
 function countryAndYear(dataset, options) {
   options = options || {};
@@ -16,21 +28,35 @@ function countryAndYear(dataset, options) {
   }
 
   var maximum;
+
   if (/Percent/.test(dataset[0].Units)) {
     maximum = 100;
   }
 
-  helpers.determineFill(dataset, year, maximum);
-
+  // if the user clicks just on the country
   if (options.ISO) {
     return dataset;
   }
 
+  var maxValue = maximum || parseInt(fullMax(dataset).Data.replace(/\,/,''));
+  var splits = config.get('numberOfColors');
+
   _.forEach(dataset, function(eachCountry) {
     _.forEach(eachCountry.AnnualData, function(annualData) {
       if (year === annualData.Year) {
+        var fillKey,
+            parsedNum = parseFloat(annualData.Data.replace(/\,/,'')); 
+         
+        if (!annualData.Data || isNaN(parsedNum)) {
+          fillKey = '0';
+        } 
+
+        var comp = parsedNum / maxValue;
+
         var reportData = {
-          fillKey: eachCountry.fillKey, 
+          fillKey: fillKey || Math.ceil(comp * splits).toString(),
+          num: parsedNum,
+          comp: comp,
           data: annualData.Data || 'N/A',
           year: annualData.Year,
           country: eachCountry.Country,
@@ -67,6 +93,7 @@ function byCountry(dataset) {
   });
   return output;
 }
+
 
 SubjectManager.prototype.find = function(params, options) {
   return MongoClient.find(params)

@@ -7,7 +7,9 @@ var express     = require('express'),
     less        = require('less-middleware'),
     nunjucks    = require('nunjucks'),
     logger      = require('morgan'),
-    config      = require('../client/config');
+    config      = require('../config');
+
+var clientConfig = config.get('client');
 
 var favicon = require('serve-favicon');
 
@@ -16,6 +18,8 @@ var routes = require('./routes');
 
 // initialise express
 var app = express();
+
+app.locals.config = config;
 
 // use nunjucks to process view templates in express
 nunjucks.configure(__dirname + '/templates/views', {
@@ -43,15 +47,15 @@ app.use(less(publicDir));
 app.use(express.static(publicDir));
 
 // common packages are precompiled on server start and cached
-app.get('/js/' + config.common.bundle, browserify(config.common.packages, {
-	cache: true,
-	precompile: true
+app.get('/js/' + clientConfig.common.bundle, browserify(clientConfig.common.packages, {
+	cache: 'dynamic',
+	precompile: true 
 }));
 
 // any file in /client/scripts will automatically be browserified,
 // excluding common packages.
 app.use('/js', browserify(path.join(__dirname, '../client/scripts'), {
-	external: config.common.packages,
+	external: clientConfig.common.packages,
 	transform: ['reactify']
 }));
 
@@ -59,7 +63,7 @@ app.use('/js', browserify(path.join(__dirname, '../client/scripts'), {
 routes(app);
 
 // start the server
-var server = app.listen(process.env.PORT || 3000, function() {
+var server = app.listen(config.get('port'), function() {
 	console.log('\nServer ready on port %d\n', server.address().port);
 });
 

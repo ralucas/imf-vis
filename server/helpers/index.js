@@ -1,8 +1,5 @@
 var _ = require('lodash');
-
-var fillLevels = {
-
-};
+var config = require('../../config');
 
 function max(dataset, year) {
   var newData = [];
@@ -38,18 +35,21 @@ function fullMax(dataset) {
 exports.determineFill = function(dataset, year, maximum) {
   //maximum isn't guaranteed
   var maxValue = maximum || parseInt(fullMax(dataset).Data.replace(/\,/,''));
-
+  var splits = config.get('numberOfColors');
+  console.log('max: ', maxValue);
   _.forEach(dataset, function(data) {
     if (data.fillKey === 'defaultFill') {
       data.fillKey = '0';
     }
     _.forEach(data.AnnualData, function(year) {
-      var parsedNum = parseInt(year.Data.replace(/\,/,'')); 
+      var parsedNum = parseFloat(year.Data.replace(/\,/,'')); 
       if (!year.Data || isNaN(parsedNum)) {
         data.fillKey = '0';
       } else {
-        var comp = (parsedNum / maxValue) * 100;
-        data.fillKey = Math.ceil(comp / 12).toString();
+        var comp = parsedNum / maxValue;
+        data.num = parsedNum;
+        data.comp = comp;
+        data.fillKey = Math.ceil(comp * splits).toString();
       }
     });
     return data;

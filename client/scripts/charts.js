@@ -17,41 +17,45 @@ function createQueryString(params) {
   return queryString.slice(0, queryString.length - 1);
 }
 
+function createLegend(numberOfColors) {
+  var legend = {
+    legendTitle: "LEGEND",
+    defaultFillName: "NO DATA",
+    labels: {
+      "0": "NO DATA",
+      "1": "LEAST"
+    }
+  };
+  for(var i = 2; i <= numberOfColors; i++){
+    var key = i.toString();
+    legend.labels[key] = " ";
+    if (i === (numberOfColors - 1)) {
+      legend.labels[key] = "MOST";
+    }
+  }
+  return legend;
+}
+
 module.exports = {
 
   cachedMap: {},
 
   cachedData: this.cachedData || {},
 
-  legend: {
-    legendTitle : "LEGEND",
-    defaultFillName: "NO DATA",
-    labels: {
-      "0": "NO DATA",
-      "1": "LEAST",
-      "2": " ",
-      "3": " ",
-      "4": " ",
-      "5": " ",
-      "6": " ",
-      "7": " ",
-      "8": " ",
-      "9": " ",
-      "10": " ",
-      "11": " ",
-      "12": "MOST" 
-    }
-  },
- 
+  numberOfColors: 25,
+
+  legend: createLegend(25),
+    
   scale: function() {
-    var start = 8;
+    var start = 60 / this.numberOfColors;
     var defaultFill = 'rgba(0,0,0,0.1)';
     var colors = [defaultFill];
     var fills = {
       '0': defaultFill 
     };
-    for(var i = 1; i < 13; i++) {
-      var color = 'hsla(8, ' + start * i + '%, 60%, 1)';
+    for(var i = 0; i < (this.numberOfColors-1); i++) {
+      var percent = 90 - (start * i);
+      var color = 'hsla(220, 90%, ' + percent + '%, 1)';
       colors.push(color);
       var str = i.toString();
       fills[str] = color;
@@ -143,9 +147,11 @@ module.exports = {
                 var firstPart = '<p><strong>Data: </strong>'; 
                 var lastPart = '';
                 
-                if (d.AnnualData && d !== null) {
+                if (d !== null && d.hasOwnProperty('AnnualData')) {
                   lastPart = '</p>';
-                  _.forEach(d.AnnualData, function(year) {
+                  var len = d.AnnualData.length;
+                  var annualData = d.AnnualData.slice(len-11, len-1);
+                  _.forEach(annualData, function(year) {
                     if (year.Year && year.Data) { 
                       lastPart += '<p><strong>' + year.Year + ':</strong> ' + year.Data + '</p>';
                     }

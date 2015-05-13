@@ -1,0 +1,18 @@
+{
+  "client": {
+    "common": {
+      "bundle": "common.js",
+      "packages": [
+        "react",
+        "react-router",
+        "d3",
+        "react-d3",
+        "topojson",
+        "datamaps/dist/datamaps.all.js",
+        "jquery",
+        "lodash",
+        "jquery-ui"
+      ]
+    }
+  }
+}
