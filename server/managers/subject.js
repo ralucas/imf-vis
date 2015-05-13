@@ -18,6 +18,19 @@ function fullMax(dataset) {
   });
 }
 
+function dataCheck(data) {
+  var output = {};
+  if (data) {
+    output.parsedNum = parseFloat(data.replace(/\,/,''));
+  }
+   
+  if (!data || isNaN(output.parsedNum)) {
+    output.fillKey = '0';
+  }
+
+  return output;
+}
+
 function countryAndYear(dataset, options) {
   options = options || {};
 
@@ -27,6 +40,7 @@ function countryAndYear(dataset, options) {
     year = "2014";
   }
 
+  var prev = parseInt(year - 1).toString();
   var maximum;
 
   if (/Percent/.test(dataset[0].Units)) {
@@ -41,21 +55,29 @@ function countryAndYear(dataset, options) {
   var maxValue = maximum || parseInt(fullMax(dataset).Data.replace(/\,/,''));
   var splits = config.get('numberOfColors');
 
-  _.forEach(dataset, function(eachCountry) {
-    _.forEach(eachCountry.AnnualData, function(annualData) {
-      if (year === annualData.Year) {
-        var fillKey,
-            parsedNum = parseFloat(annualData.Data.replace(/\,/,'')); 
-         
-        if (!annualData.Data || isNaN(parsedNum)) {
-          fillKey = '0';
-        } 
 
-        var comp = parsedNum / maxValue;
+  _.forEach(dataset, function(eachCountry) {
+    var prevData;
+    _.forEach(eachCountry.AnnualData, function(annualData) {
+      
+      if (prev === annualData.Year) {
+        prevData = dataCheck(annualData.Data);
+      }
+
+      if (year === annualData.Year) {
+        var comp;
+        var currData = dataCheck(annualData.Data);
+
+        if (currData.parsedNum && prevData.parsedNum) {
+          comp = ((currData.parsedNum - prevData.parsedNum) / prevData.parsedNum);
+        }
 
         var reportData = {
-          fillKey: fillKey || Math.ceil(comp * splits).toString(),
-          num: parsedNum,
+          fillKey: currData.fillKey || Math.ceil(comp * splits).toString(),
+          numbers: {
+            curr: currData.parsedNum,
+            prev: prevData.parsedNum
+          },
           comp: comp,
           data: annualData.Data || 'N/A',
           year: annualData.Year,
