@@ -27,7 +27,7 @@ var parseCountries = function(csvFile) {
       headers.push(header);
     });
 
-    var years = headers.slice(9);
+    var years = headers.slice(10);
 
     var currCode,
         doc = {},
@@ -42,7 +42,7 @@ var parseCountries = function(csvFile) {
         docs.push(doc);
       }
 
-      var annualData = mapYears([years, data.slice(9)]);
+      var annualData = mapYears([years, data.slice(10)]);
 
       doc = {
         WEO_Country_Code: data[0],
@@ -75,7 +75,8 @@ var parseSubjects = function(csvFile) {
       header.replace(/\s/, '_');
       headers.push(header);
     });
-    var years = headers.slice(9, headers.length-2);
+    var years = headers.slice(9, headers.length-1);
+    console.log('years: ', years);
 
     var currCode,
         doc = {},
@@ -83,12 +84,10 @@ var parseSubjects = function(csvFile) {
    
     _.forEach(output, function(data, idx) {
       var len = data.length;
-      var dataArr = data.slice(9, len -2);
+      var dataArr = data.slice(9, len-1);
     
       var annualData = mapYears([years, dataArr]);
-      if (data[1] === 'USA') {
-        console.log(data[2], annualData);
-      }
+
       doc = {
         WEO_Country_Code: data[0],
         ISO: data[1],

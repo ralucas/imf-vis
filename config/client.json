@@ -11,7 +11,9 @@
         "datamaps/dist/datamaps.all.js",
         "jquery",
         "lodash",
-        "jquery-ui"
+        "jquery-ui",
+        "brfs",
+        "./config/index.js"
       ]
     }
   }

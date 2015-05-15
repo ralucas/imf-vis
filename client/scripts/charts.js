@@ -4,7 +4,11 @@ datamaps = require('datamaps/dist/datamaps.all.js');
 $ = require('jquery');
 _ = require('lodash');
 
-//var cachedData = cachedData || {};
+path = require('path');
+fs = require('fs');
+
+var mapConfig = fs.readFileSync(path.join(__dirname, '../../config/maps.json'), 'utf8');
+var numberOfColors = JSON.parse(mapConfig).numberOfColors;
 
 function createQueryString(params) {
   var queryString = '?';
@@ -17,7 +21,7 @@ function createQueryString(params) {
   return queryString.slice(0, queryString.length - 1);
 }
 
-function createLegend(numberOfColors) {
+function createLegend() {
   var legend = {
     legendTitle: "LEGEND",
     defaultFillName: "NO DATA",
@@ -42,20 +46,18 @@ module.exports = {
 
   cachedData: this.cachedData || {},
 
-  numberOfColors: 25,
-
-  legend: createLegend(25),
+  legend: createLegend(numberOfColors),
     
   scale: function() {
-    var start = 60 / this.numberOfColors;
+    var start = 60 / numberOfColors;
     var defaultFill = 'rgba(0,0,0,0.1)';
     var colors = [defaultFill];
     var fills = {
       '0': defaultFill 
     };
-    for(var i = 0; i < (this.numberOfColors-1); i++) {
+    for(var i = 0; i < (numberOfColors-1); i++) {
       var percent = 90 - (start * i);
-      var color = 'hsla(220, 90%, ' + percent + '%, 1)';
+      var color = 'hsla(10, 90%, ' + percent + '%, 1)';
       colors.push(color);
       var str = i.toString();
       fills[str] = color;
@@ -99,7 +101,7 @@ module.exports = {
               return '<div class="hoverinfo"><p><strong>' +
                 geo.properties.name + '</strong></p>' +
                 '<p><strong>Data:</strong><span> ' + 
-                data.data + '</span></p></div>';
+                (data.comp*100).toFixed(2) + '% Change</span></p></div>';
             }
           }
         });
@@ -121,7 +123,7 @@ module.exports = {
         data = that.cachedData;
 
         that.cachedMap = new Datamap({
-          element: document.getElementById('chart'),
+          element: document.getElementById('chart'), 
           responsive: true,
           fills: colors.fills,
           data: data,
@@ -189,15 +191,16 @@ module.exports = {
           colorUpdate[country] = colors[value.fillKey];
         });
 
+        console.log(that.cachedMap);
+        
+        var element = document.getElementById('chart');
+
         that.cachedMap.updateChoropleth(colorUpdate);
+        
+        that.cachedMap.updatePopup(element, data, that.cachedMap.options);
+
       });
   }
 
 };
-
-/*{*/
-            //HIGH: 'hsla(8, 50%, 45%, 1)',
-            //LOW: 'hsla(8, 40%, 82%, 1)',
-            //MEDIUM: 'hsla(8, 42%, 62%, 1)',
-          /*},*/
 

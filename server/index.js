@@ -48,15 +48,17 @@ app.use(express.static(publicDir));
 
 // common packages are precompiled on server start and cached
 app.get('/js/' + clientConfig.common.bundle, browserify(clientConfig.common.packages, {
+  ignore: ['system', 'file'],
 	cache: 'dynamic',
-	precompile: true 
+	precompile: false 
 }));
 
 // any file in /client/scripts will automatically be browserified,
 // excluding common packages.
 app.use('/js', browserify(path.join(__dirname, '../client/scripts'), {
 	external: clientConfig.common.packages,
-	transform: ['reactify']
+  ignore: ['system', 'file'],
+	transform: ['reactify', 'brfs']
 }));
 
 //Routes

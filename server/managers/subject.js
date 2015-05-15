@@ -40,6 +40,7 @@ function countryAndYear(dataset, options) {
     year = "2014";
   }
 
+  var two = parseInt(year - 2).toString();
   var prev = parseInt(year - 1).toString();
   var maximum;
 
@@ -57,8 +58,12 @@ function countryAndYear(dataset, options) {
 
 
   _.forEach(dataset, function(eachCountry) {
-    var prevData;
+    var prevData, twoData;
     _.forEach(eachCountry.AnnualData, function(annualData) {
+
+      if (two === annualData.Year) {
+        twoData = dataCheck(annualData.Data);
+      }
       
       if (prev === annualData.Year) {
         prevData = dataCheck(annualData.Data);
@@ -70,13 +75,20 @@ function countryAndYear(dataset, options) {
 
         if (currData.parsedNum && prevData.parsedNum) {
           comp = ((currData.parsedNum - prevData.parsedNum) / prevData.parsedNum);
+          comp = Math.abs(comp);
+          // no change
+          if (comp === 0) {
+            comp = ((currData.parsedNum - twoData.parsedNum) / twoData.parsedNum);
+            comp = Math.abs(comp); 
+          }
         }
 
         var reportData = {
           fillKey: currData.fillKey || Math.ceil(comp * splits).toString(),
           numbers: {
             curr: currData.parsedNum,
-            prev: prevData.parsedNum
+            prev: prevData.parsedNum,
+            two: twoData.parsedNum
           },
           comp: comp,
           data: annualData.Data || 'N/A',
