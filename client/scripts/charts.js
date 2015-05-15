@@ -191,14 +191,10 @@ module.exports = {
           colorUpdate[country] = colors[value.fillKey];
         });
 
-        console.log(that.cachedMap);
-        
         var element = document.getElementById('chart');
 
         that.cachedMap.updateChoropleth(colorUpdate);
         
-        that.cachedMap.updatePopup(element, data, that.cachedMap.options);
-
       });
   }
 
