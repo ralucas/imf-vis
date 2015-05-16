@@ -48,8 +48,9 @@ app.use(express.static(publicDir));
 
 // common packages are precompiled on server start and cached
 app.get('/js/' + clientConfig.common.bundle, browserify(clientConfig.common.packages, {
-	cache: true,
-	precompile: true 
+	cache: false,
+	precompile: false,
+  ignore: ['system', 'file'] 
 }));
 
 // any file in /client/scripts will automatically be browserified,
