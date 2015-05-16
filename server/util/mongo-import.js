@@ -76,7 +76,6 @@ var parseSubjects = function(csvFile) {
       headers.push(header);
     });
     var years = headers.slice(9, headers.length-1);
-    console.log('years: ', years);
 
     var currCode,
         doc = {},

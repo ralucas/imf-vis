@@ -45,12 +45,12 @@ app.use(less(publicDir));
 
 // public assets are served before any dynamic requests
 app.use(express.static(publicDir));
-console.log(clientConfig.common.packages);
+
 // common packages are precompiled on server start and cached
 app.get('/js/' + clientConfig.common.bundle, browserify(clientConfig.common.packages, {
-  ignore: ['system', 'file'],
 	cache: true,
-	precompile: true 
+	precompile: true, 
+  ignore: ['system', 'file']
 }));
 
 // any file in /client/scripts will automatically be browserified,

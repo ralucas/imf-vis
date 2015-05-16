@@ -9,7 +9,6 @@ var Header = React.createClass({
 			<div className="page-header">
 				<h1>VISUALIZATIONS</h1>
         <div id="text-logo"></div>
-        <div id="img-logo"><img src="../images/imf_logo.gif"/></div>
 			</div>
 		);
 	}
