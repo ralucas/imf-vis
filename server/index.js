@@ -45,7 +45,7 @@ app.use(less(publicDir));
 
 // public assets are served before any dynamic requests
 app.use(express.static(publicDir));
-console.log(clientConfig.common.bundle);
+console.log(clientConfig.common.packages);
 // common packages are precompiled on server start and cached
 app.get('/js/' + clientConfig.common.bundle, browserify(clientConfig.common.packages, {
   ignore: ['system', 'file'],
@@ -57,7 +57,6 @@ app.get('/js/' + clientConfig.common.bundle, browserify(clientConfig.common.pack
 // excluding common packages.
 app.use('/js', browserify(path.join(__dirname, '../client/scripts'), {
 	external: clientConfig.common.packages,
-  ignore: ['system', 'file'],
 	transform: ['reactify', 'brfs']
 }));
 
