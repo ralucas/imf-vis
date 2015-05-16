@@ -144,7 +144,7 @@ module.exports = function (grunt) {
       },
       client: {
         src: ['public/js/scripts'],
-        dest: 'build/index.js',
+        dest: 'public/js/index.js',
         options: {
           external: clientConfig.common.packages,
           transform: ['reactify', 'brfs']
