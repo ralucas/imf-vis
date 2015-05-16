@@ -143,7 +143,7 @@ module.exports = function (grunt) {
         }
       },
       client: {
-        src: ['public/js/scripts'],
+        src: ['client/scripts/*.js'],
         dest: 'public/js/index.js',
         options: {
           external: clientConfig.common.packages,
